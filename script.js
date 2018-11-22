@@ -42,25 +42,42 @@ let todoList = {
 };
 
 
+
+
 let handlers={
 	addTodo:function(){
 		const addTodoTextInput = document.getElementById('addTodoTextInput');
-		todoList.addTodo(addTodoTextInput.value);
+			if (addTodoTextInput.value == ''){
+				alert('Your given To-Do is empty.');
+				return false;
+			}else{	
+				todoList.addTodo(addTodoTextInput.value);
+			};
 		addTodoTextInput.value='';
 		view.displayTodos();
+		
 	},
 	deleteTodo:function(position){
 		todoList.deleteTodo(position);
 		view.displayTodos();
 	},
+	
+	activateModal:function(position) {
+		currpos: 0,
+		this.currpos = position;
+	},
 	changeTodo:function(position){
-	debugger;
+		position = this.currpos;
+		
 		var changeTodoTexInputInput = document.getElementById('changeTodoTextInput');
-		todoList.changeTodo(position, changeTodoTextInput.value);
-		//changeTodoTextInput.value='';
+			if (changeTodoTextInput.value == ''){
+				alert('Your given To-Do is empty.');
+				return false;
+			}else{	
+				todoList.changeTodo(position, changeTodoTextInput.value);
+			};
+		changeTodoTextInput.value='';
 		view.displayTodos();
-			console.log(position);
-			console.log(changeTodoTextInput.value);
 
 	},
 	toggleCompleted:function(position){
@@ -72,8 +89,9 @@ let handlers={
 		todoList.toggleAll();
 		view.displayTodos();
 	},
-
 };
+		
+
 
 let view={
 	displayTodos:function(){
@@ -85,7 +103,7 @@ let view={
 			let todoTextWithCompletion='';
 			
 			if(todo.completed===true){
-				todoTextWithCompletion='<i class="far fa-check-circle"></i> <span class="completed">' + todo.todoText + '</span> ';// <span contenteditable="true">
+				todoTextWithCompletion='<i class="far fa-check-circle"></i> <span class="completed">' + todo.todoText + '</span> ';
 			}else{
 				todoTextWithCompletion='<i class="far fa-circle"></i> <span class="incomplete">' + todo.todoText + '</span> ';
 			}
@@ -112,10 +130,12 @@ let view={
 	createChangeButton:function(){
 		let changeButton= document.createElement('button');
 		changeButton.innerHTML='Change';//<i class="fas fa-hammer"></i>
+		//changeButton.className='btn';
 		changeButton.className='changeButton';
 		changeButton.setAttribute('data-toggle','modal');
 		changeButton.setAttribute('data-target','#exampleModalCenter');
 		return changeButton;
+		
 	},
 	elementCounter:function(){
 		let count = document.getElementById('count');
@@ -124,8 +144,8 @@ let view={
 	},
 		
 	setUpEventListeners:function(){
-		let todosUl=document.querySelector('ul');
-			todosUl.addEventListener('click', function(event){
+		//let todosUl=document.querySelector('ul');
+			document.addEventListener('click', function(event){
 	
 			let elementClicked = event.target;
 				if (elementClicked.className === 'deleteButton'){ 
@@ -135,23 +155,48 @@ let view={
 					handlers.toggleCompleted(parseInt(elementClicked.parentNode.id));
 				}	
 				if (elementClicked.className === 'changeButton'){ 
-					handlers.changeTodo(parseInt(elementClicked.parentNode.id));
+					handlers.activateModal(parseInt(elementClicked.parentNode.id));
 				}
-				
-				
-		});
-		let content = document.getElementsByClassName('content');
-			content[0].addEventListener('click', function(event){
-	
-			let elementClicked = event.target;
+				if (elementClicked.id === 'addBtn'){
+					handlers.addTodo();	
+				}
+				if (elementClicked.id === 'toggleBtn'){
+					handlers.toggleAll();
+				}
 				if (elementClicked){ 
 					view.elementCounter();
 				}
 				
 		});
+
 	},
 
 };
+
+	let utilities={
+	textInputOnEnter:function(){
+		document.getElementById('addTodoTextInput').addEventListener('keyup', function(event){
+			event.preventDefault();
+				if (event.keyCode === 13) {
+					document.getElementById('addBtn').click();
+    };
+});
+		document.getElementById('changeTodoTextInput').addEventListener('keyup', function(event) {
+			event.preventDefault();
+				if (event.keyCode === 13) {
+					document.getElementById('changeBtn').click();
+	}
+});
+	},
+
+	
+   
+};		
+
 view.setUpEventListeners();
+utilities.textInputOnEnter();
+
+
+
 
 

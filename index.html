@@ -8,33 +8,31 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 	<!-- My stuff -->
+	
 	<link rel="stylesheet" type="text/css" href="style.css">
     <script type="text/javascript" src="script.js" defer></script>
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
 	
     <title>Hello, world!</title>
+	
   </head>
   <body>
-         <div class="content" >
+      <main>
 		<h1> To-do List </h1>
 		
 		<div>
-		<button onclick="handlers.addTodo()">Add</button>
-		<input id="addTodoTextInput" type="text">
+		<button id="addBtn">Add</button>
+		<input id="addTodoTextInput" type="text" maxlength="100">
 		</div>
-		
-	 <ul>
+			 <ul>
 
-	 </ul>
-	 
-		<div>
-		<button onclick="handlers.toggleAll()">Toggle All</button>
+			 </ul>
+		<div >
+		<button id="toggleBtn" >Toggle All</button>
 		<p id="count">Press add to start.</p>
 		</div>
-		
-		
-     </div>
+     </main>
 
 
 <!-- Modal -->
@@ -48,11 +46,20 @@
         </button>
       </div>
       <div class="modal-body">
-        <input id="changeTodoTextInput" type="text">
+	  
+	  
+	   <!-- <div class="form-group">
+    <label for="changeTodoTextInput">Feel free to edit your To-do.</label>
+    <textarea class="form-control" id="changeTodoTextInput" rows="3" maxlength="100"></textarea>
+  </div>
+</form>-->
+     <input id="changeTodoTextInput" type="text" maxlength="100">
+		
+		
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" onclick="handlers.changeTodo()">Save changes</button>
+        <button id="changeBtn" type="button" class="btn btn-primary" onclick="handlers.changeTodo()" data-dismiss="modal">Save changes</button>
       </div>
     </div>
   </div>

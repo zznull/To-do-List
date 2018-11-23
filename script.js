@@ -1,4 +1,17 @@
 
+
+//Pievienots
+const  CONFIG={
+	'MAXITEM':10,
+	'DATASRC':'https://to-do-list-a3c11.firebaseio.com/todos.json',
+	
+};
+//Pievienots
+function getInitialTasks() {
+    fetch(CONFIG.DATASRC).then(response => response.json()).then(mycrazydata => handlers.addTodo(mycrazydata))
+};
+
+
 let todoList = {
 	todos: [],
 
@@ -7,6 +20,8 @@ let todoList = {
 			todoText: todoText,
 			completed: false
 		});
+		//pievienots
+		postData(CONFIG.DATASRC, todoText);
 	},
 	
 	changeTodo: function(position, todoText){
@@ -56,6 +71,15 @@ let handlers={
 		addTodoTextInput.value='';
 		view.displayTodos();
 		
+	},
+	//pievienots
+	addBaseTodo:function(todos){
+		console.log(todos);
+		for(todo in todos){
+			console.log(todos[todo]);
+			todoList.addTodo(todos[todo]);
+		};
+		view.displayTodos();
 	},
 	deleteTodo:function(position){
 		todoList.deleteTodo(position);
@@ -195,7 +219,8 @@ let view={
 
 view.setUpEventListeners();
 utilities.textInputOnEnter();
-
+//pievienots
+getInitialTasks();
 
 
 

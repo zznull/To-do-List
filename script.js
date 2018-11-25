@@ -6,7 +6,7 @@ const  CONFIG={
 	'DATASRC':'https://to-do-list-a3c11.firebaseio.com/todos.json',
 	'PATCHURL' :'https://to-do-list-a3c11.firebaseio.com/todos/',
 	'DELETEURL' :'https://to-do-list-a3c11.firebaseio.com/todos/',
-	
+
 };
 //Pievienots
 function getInitialTasks() {
@@ -17,6 +17,7 @@ function getInitialTasks() {
 let todoList = {
 	todos: [],
 
+	// šo lietojam tikai tad, kad gribam gan pievienot vizuāli lapā, gan arī aizsūtīt uz serveri
 	addTodo: function(todoText){
 		let newTask={
 			todoText: todoText,
@@ -26,32 +27,32 @@ let todoList = {
 		//pievienots
 		postData(CONFIG.DATASRC, newTask);
 	},
-	
+
 	changeTodo: function(position, todoText){
 		this.todos[position].todoText = todoText;
 		patchData(CONFIG.PATCHURL+this.todos[position].userid+".json",  todoText)
-	},   
-	
+	},
+
 	deleteTodo:function(position){
 		this.todos.splice(position,1);
 		//pievienots
 		deleteData(CONFIG.DELETEURL, position,1);
 	},
-	
+
 	toggleCompleted: function(position){
 		let todo=this.todos[position];
 		todo.completed = !todo.completed;
 	},
-	
+
 	toggleAll: function(){
 		let completedTodos=0;
-		
+
 		this.todos.forEach(function(todo){
 			if (todo.completed===true){
 				completedTodos++
 			}
 		});
-		
+
 		this.todos.forEach(function(todo){
 			if(completedTodos===todoList.todos.length){
 				todo.completed=false;
@@ -71,21 +72,19 @@ let handlers={
 			if (addTodoTextInput.value == ''){
 				alert('Your given To-Do is empty.');
 				return false;
-			}else{	
-			todoList.addTodo(addTodoTextInput.value);
+			}else{
+				todoList.addTodo(addTodoTextInput.value);
 			};
 		addTodoTextInput.value='';
 		view.displayTodos();
-		
+
 	},
 	//pievienots
 	addBaseTodo:function(todos){
 		for(todo in todos){
 			let newObj = todos[todo];
-			newObj.userId = todo;
-			
-
-			todoList.addTodo(newObj);
+			// todoList.addTodo(newObj);
+			todoList.todos.push(newObj);
 		};
 		view.displayTodos();
 	},
@@ -93,19 +92,19 @@ let handlers={
 		todoList.deleteTodo(position);
 		view.displayTodos();
 	},
-	
+
 	activateModal:function(position) {
 		currpos: 0,
 		this.currpos = position;
 	},
 	changeTodo:function(position){
 		position = this.currpos;
-		
+
 		var changeTodoTexInputInput = document.getElementById('changeTodoTextInput');
 			if (changeTodoTextInput.value == ''){
 				alert('Your given To-Do is empty.');
 				return false;
-			}else{	
+			}else{
 				todoList.changeTodo(position, changeTodoTextInput.value);
 			};
 		changeTodoTextInput.value='';
@@ -122,7 +121,7 @@ let handlers={
 		view.displayTodos();
 	},
 };
-		
+
 
 
 let view={
@@ -133,7 +132,7 @@ let view={
 		todoList.todos.forEach(function(todo, position){
 			let todoLi= document.createElement('li');
 			let todoTextWithCompletion='';
-			
+
 			if(todo.completed===true){
 				todoTextWithCompletion='<i class="far fa-check-circle"></i> <span class="completed">' + todo.todoText + '</span> ';
 			}else{
@@ -148,9 +147,9 @@ let view={
 		});
 	},
 	createToggleCompletedButton:function(){
-		let toggleCompletedButton=document.createElement('button'); 
+		let toggleCompletedButton=document.createElement('button');
 		toggleCompletedButton.innerHTML='Complete'; //Nosaukums DOM'ā // <i class="fas fa-check"></i>
-		toggleCompletedButton.className='toggleCompletedButton'; // Piešķirts class name 
+		toggleCompletedButton.className='toggleCompletedButton'; // Piešķirts class name
 		return toggleCompletedButton; //atgriezta vērtība
 	},
 	createDeleteButton:function(){
@@ -167,37 +166,37 @@ let view={
 		changeButton.setAttribute('data-toggle','modal');
 		changeButton.setAttribute('data-target','#exampleModalCenter');
 		return changeButton;
-		
+
 	},
 	elementCounter:function(){
 		let count = document.getElementById('count');
 		let countIncomplete = document.getElementsByClassName('incomplete').length;
 		count.innerText='You have "'+ countIncomplete + '" To-do\'s that needs to be done.';
 	},
-		
+
 	setUpEventListeners:function(){
 			document.addEventListener('click', function(event){
-	
+
 			let elementClicked = event.target;
-				if (elementClicked.className === 'deleteButton'){ 
+				if (elementClicked.className === 'deleteButton'){
 					handlers.deleteTodo(parseInt(elementClicked.parentNode.id));
 				}
-				if (elementClicked.className === 'toggleCompletedButton'){ 
+				if (elementClicked.className === 'toggleCompletedButton'){
 					handlers.toggleCompleted(parseInt(elementClicked.parentNode.id));
-				}	
-				if (elementClicked.className === 'changeButton'){ 
+				}
+				if (elementClicked.className === 'changeButton'){
 					handlers.activateModal(parseInt(elementClicked.parentNode.id));
 				}
 				if (elementClicked.id === 'addBtn'){
-					handlers.addTodo();	
+					handlers.addTodo();
 				}
 				if (elementClicked.id === 'toggleBtn'){
 					handlers.toggleAll();
 				}
-				if (elementClicked){ 
+				if (elementClicked){
 					view.elementCounter();
 				}
-				
+
 		});
 
 	},
@@ -220,9 +219,9 @@ let view={
 });
 	},
 
-	
-   
-};		
+
+
+};
 
 view.setUpEventListeners();
 utilities.textInputOnEnter();
@@ -230,5 +229,3 @@ utilities.textInputOnEnter();
 getInitialTasks();
 
 console.log(todoList.todos);
-
-

@@ -4,11 +4,13 @@
 const  CONFIG={
 	'MAXITEM':10,
 	'DATASRC':'https://to-do-list-a3c11.firebaseio.com/todos.json',
+	'PATCHURL' :'https://to-do-list-a3c11.firebaseio.com/todos/',
+	'DELETEURL' :'https://to-do-list-a3c11.firebaseio.com/todos/',
 	
 };
 //Pievienots
 function getInitialTasks() {
-    fetch(CONFIG.DATASRC).then(response => response.json()).then(mycrazydata => handlers.addTodo(mycrazydata))
+    fetch(CONFIG.DATASRC).then(response => response.json()).then(mycrazydata => handlers.addBaseTodo(mycrazydata))
 };
 
 
@@ -16,20 +18,24 @@ let todoList = {
 	todos: [],
 
 	addTodo: function(todoText){
-		this.todos.push({
+		let newTask={
 			todoText: todoText,
-			completed: false
-		});
+			completed: false};
+
+		this.todos.push(newTask);
 		//pievienots
-		postData(CONFIG.DATASRC, todoText);
+		postData(CONFIG.DATASRC, newTask);
 	},
 	
 	changeTodo: function(position, todoText){
 		this.todos[position].todoText = todoText;
-	},
+		patchData(CONFIG.PATCHURL+this.todos[position].userid+".json",  todoText)
+	},   
 	
 	deleteTodo:function(position){
 		this.todos.splice(position,1);
+		//pievienots
+		deleteData(CONFIG.DELETEURL, position,1);
 	},
 	
 	toggleCompleted: function(position){
@@ -66,7 +72,7 @@ let handlers={
 				alert('Your given To-Do is empty.');
 				return false;
 			}else{	
-				todoList.addTodo(addTodoTextInput.value);
+			todoList.addTodo(addTodoTextInput.value);
 			};
 		addTodoTextInput.value='';
 		view.displayTodos();
@@ -74,10 +80,12 @@ let handlers={
 	},
 	//pievienots
 	addBaseTodo:function(todos){
-		console.log(todos);
 		for(todo in todos){
-			console.log(todos[todo]);
-			todoList.addTodo(todos[todo]);
+			let newObj = todos[todo];
+			newObj.userId = todo;
+			
+
+			todoList.addTodo(newObj);
 		};
 		view.displayTodos();
 	},
@@ -168,7 +176,6 @@ let view={
 	},
 		
 	setUpEventListeners:function(){
-		//let todosUl=document.querySelector('ul');
 			document.addEventListener('click', function(event){
 	
 			let elementClicked = event.target;
@@ -222,6 +229,6 @@ utilities.textInputOnEnter();
 //pievienots
 getInitialTasks();
 
-
+console.log(todoList.todos);
 
 

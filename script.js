@@ -4,18 +4,19 @@
 const  CONFIG={
 	'MAXITEM':10,
 	'DATASRC':'https://to-do-list-a3c11.firebaseio.com/todos.json',
-	'PATCHURL' :'https://to-do-list-a3c11.firebaseio.com/todos/',
-	'DELETEURL' :'https://to-do-list-a3c11.firebaseio.com/todos/',
+	'PATCHURL' :'https://to-do-list-a3c11.firebaseio.com/todos.json',
+	'DELETEURL' :'https://to-do-list-a3c11.firebaseio.com/todos.json',
 
 };
 //Pievienots
 function getInitialTasks() {
-    fetch(CONFIG.DATASRC).then(response => response.json()).then(mycrazydata => handlers.addBaseTodo(mycrazydata))
+    fetch(CONFIG.DATASRC).then(response => response.json()).then(mycrazydata => handlers.addBaseTodo(mycrazydata));
 };
 
 
 let todoList = {
 	todos: [],
+	ids: [],
 
 	// šo lietojam tikai tad, kad gribam gan pievienot vizuāli lapā, gan arī aizsūtīt uz serveri
 	addTodo: function(todoText){
@@ -34,9 +35,14 @@ let todoList = {
 	},
 
 	deleteTodo:function(position){
+		let id = this.ids[position];
+
 		this.todos.splice(position,1);
-		//pievienots
-		deleteData(CONFIG.DELETEURL, position,1);
+		this.ids.splice(position, 1);
+
+		let req = {};
+		req[id] = null;
+		patchData(CONFIG.DELETEURL, req);
 	},
 
 	toggleCompleted: function(position){
@@ -81,10 +87,10 @@ let handlers={
 	},
 	//pievienots
 	addBaseTodo:function(todos){
-		for(todo in todos){
-			let newObj = todos[todo];
-			// todoList.addTodo(newObj);
+		for(id in todos){
+			let newObj = todos[id];
 			todoList.todos.push(newObj);
+			todoList.ids.push(id);
 		};
 		view.displayTodos();
 	},
